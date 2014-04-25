@@ -1720,16 +1720,16 @@ fu! s:GetClassPath()
 endfu
 
 fu! s:GetJavaCompleteClassPath()
-    let classfile = globpath(&rtp, 'autoload/Reflection.class')
+    let classfile = globpath(&rtp, 'autoload/Reflection.class',1)
     if classfile == ''
-        let classfile = globpath($HOME, 'Reflection.class')
+        let classfile = globpath($HOME, 'Reflection.class',1)
     endif
     if classfile == ''
         " try to find source file and compile to $HOME
         let srcfile = globpath(&rtp, 'autoload/Reflection.java')
         if srcfile != ''
             exe '!' . javacomplete#GetCompiler() . ' -g -d "' . $HOME . '" "' . srcfile . '"'
-            let classfile = globpath($HOME, 'Reflection.class')
+            let classfile = globpath($HOME, 'Reflection.class',1)
             if classfile == ''
                 echo srcfile . ' can not be compiled. Please check it'
             endif
@@ -1753,7 +1753,7 @@ fu! s:GetClassPathOfJsp()
                 let b:classpath_jsp .= s:PATH_SEP . path . '/WEB-INF/classes'
             endif
             if isdirectory(path . '/WEB-INF/lib')
-                let libs = globpath(path . '/WEB-INF/lib', '*.jar')
+                let libs = globpath(path . '/WEB-INF/lib', '*.jar',1)
                 if libs != ''
                     let b:classpath_jsp .= s:PATH_SEP . substitute(libs, "\n", s:PATH_SEP, 'g')
                 endif
