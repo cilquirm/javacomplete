@@ -1722,14 +1722,19 @@ endfu
 fu! s:GetJavaCompleteClassPath()
     let classfile = globpath(&rtp, 'autoload/Reflection.class',1)
     if classfile == ''
-        let classfile = globpath($HOME, 'Reflection.class',1)
+        let classfile = globpath(&rtp, 'Reflection.class',1)
+    endif
+    if classfile == ''
+        let classfile = globpath($HOME, 'Reflection.class', 1)
     endif
     if classfile == ''
         " try to find source file and compile to $HOME
         let srcfile = globpath(&rtp, 'autoload/Reflection.java')
+        let destpath = fnamemodify(srcfile,':p:h')
         if srcfile != ''
-            exe '!' . javacomplete#GetCompiler() . ' -g -d "' . $HOME . '" "' . srcfile . '"'
-            let classfile = globpath($HOME, 'Reflection.class',1)
+            echo 'Compiling Reflection.java'
+            exe '!' . javacomplete#GetCompiler() . ' -g -d "' . destpath . '" "' . srcfile . '"'
+            let classfile = globpath(&rtp, 'Reflection.class',1)
             if classfile == ''
                 echo srcfile . ' can not be compiled. Please check it'
             endif
