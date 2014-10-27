@@ -345,7 +345,7 @@ fu! s:CompleteAfterWord(incomplete)
         for dirpath in s:GetSourceDirs(expand('%:p'))
             let filepatterns .= escape(dirpath, ' \') . '/*.java '
         endfor
-        exe 'vimgrep /\s*' . s:RE_TYPE_DECL . '/jg ' . filepatterns
+        silent! exe 'vimgrep /\s*' . s:RE_TYPE_DECL . '/jg ' . filepatterns
         for item in getqflist()
             if item.text !~ '^\s*\*\s\+'
                 let text = matchstr(s:Prune(item.text, -1), '\s*' . s:RE_TYPE_DECL)
@@ -2036,6 +2036,7 @@ endfu
 
 fu! s:SetCurrentFileKey()
     let s:curfilekey = empty(expand('%')) ? bufnr('%') : expand('%:p')
+    let b:errormsg = ''
 endfu
 
 call s:SetCurrentFileKey()
@@ -2195,7 +2196,7 @@ fu! s:DoGetTypeInfoForFQN(fqns, srcpath, ...)
         endfor
 
         let cwd = fnamemodify(expand('%:p:h'), ':p:h:gs?[\\/]\+?/?')
-        exe 'vimgrep /\s*' . s:RE_TYPE_DECL . '/jg ' . filepatterns
+        silent! exe 'vimgrep /\s*' . s:RE_TYPE_DECL . '/jg ' . filepatterns
         for item in getqflist()
             if item.text !~ '^\s*\*\s\+'
                 let text = matchstr(s:Prune(item.text, -1), '\s*' . s:RE_TYPE_DECL)
